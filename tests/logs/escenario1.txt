@@ -1,0 +1,11 @@
+ESCENARIO 1: Consulta simple (solo buscar_politicas)
+Cliente: Matias
+Tú: ¿Cuánto demora un despacho a regiones?
+  [memoria] Sin interacciones previas.
+  [plan | prioridad baja]
+    1. buscar_politicas
+  [tool] buscar_politicas({'consulta': 'despacho regiones plazos envios'})
+
+Asistente: ¡Hola, Matias! El despacho a regiones se realiza a través de Chilexpress y tiene un plazo estimado de **3 a 5 días hábiles**, dependiendo de la región. 
+
+¿Te puedo ayudar con algo más?

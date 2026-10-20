@@ -1,0 +1,20 @@
+ESCENARIO 3: Fuera de plazo -> el evaluador fuerza ticket
+Cliente: Diego
+Tú: Quiero devolver el pedido ORD-1002
+  [memoria] Sin interacciones previas.
+  [plan | prioridad media]
+    1. consultar_pedido
+    2. evaluar_elegibilidad
+    3. buscar_politicas
+    4. crear_ticket
+  [tool] consultar_pedido({'id_pedido': 'ORD-1002'})
+  [tool] evaluar_elegibilidad({'fecha_compra': '2026-09-04', 'tipo_caso': 'devolucion'})
+  [tool] buscar_politicas({'consulta': 'devoluciones'})
+  [evaluador] El caso está fuera de plazo. Explícalo con claridad y crea un ticket para que soporte humano evalúe una excepción.
+  [tool] crear_ticket({'prioridad': 'media', 'resumen': 'Solicitud de devolución fuera de plazo para el pedido ORD-1002 (recibido el 2026-09-04). El sistema indicó que han pasado 46 días (plazo máximo de 10 días). Se requiere evaluación de soporte humano para excepción.', 'cliente': 'Diego Pérez'})
+
+Asistente: Hola Diego, he revisado los detalles de tu pedido **ORD-1002** (Prismatic Classic Leather), recibido el 4 de septiembre de 2026. 
+
+De acuerdo con nuestras políticas, el plazo máximo para realizar devoluciones es de 10 días corridos desde la recepción del producto. Como han transcurrido 46 días, la solicitud se encuentra fuera de plazo automático.
+
+He creado el ticket de soporte **TCK-20261020165301** para que nuestro equipo humano revise tu caso en detalle y te contacte pronto. ¡Quedamos a tu disposición!

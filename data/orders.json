@@ -1,0 +1,6 @@
+{
+  "ORD-1001": {"cliente": "Camila Rojas", "producto": "Prismatic Chrono Steel", "fecha_compra": "2026-10-05", "fecha_recepcion": "2026-10-12", "estado": "entregado"},
+  "ORD-1002": {"cliente": "Diego Pérez", "producto": "Prismatic Classic Leather", "fecha_compra": "2026-08-30", "fecha_recepcion": "2026-09-04", "estado": "entregado"},
+  "ORD-1003": {"cliente": "Ana Torres", "producto": "Prismatic Diver 200", "fecha_compra": "2025-06-12", "fecha_recepcion": "2025-06-17", "estado": "entregado"},
+  "ORD-1004": {"cliente": "Luis Soto", "producto": "Prismatic Slim Gold", "fecha_compra": "2026-10-15", "fecha_recepcion": null, "estado": "en_camino"}
+}

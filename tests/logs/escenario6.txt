@@ -1,0 +1,18 @@
+ESCENARIO 6: Memoria larga entre sesiones (correr después del escenario 3)
+Cliente: Diego
+Tú: ¿Qué pasó con mi caso anterior?
+  [memoria] - (2026-10-20) Consultó: Quiero devolver el pedido ORD-1002. Herramientas usadas: buscar_politicas, consultar_pedido, crear_ticket, evaluar_elegibilidad. Resultado: Hola Diego, he revisado los detalles de tu pedido **ORD-1002** (Prismatic Classic Leather), recibido el 4 de septiembre de 2026. 
+
+De acuerdo con nuestras políticas, el plazo máximo para realizar devo
+  [plan | prioridad media]
+    1. Consultar el estado actual del ticket de soporte anterior
+    2. Verificar los registros de la solicitud de devolución del pedido ORD-1002
+    3. Informar al cliente sobre el estado actual de su trámite
+  [tool] consultar_pedido({'id_pedido': 'ORD-1002'})
+  [tool] buscar_politicas({'consulta': 'devolucion plazo ticket'})
+
+Asistente: Hola Diego, estuve revisando tu caso sobre el pedido **ORD-1002** (*Prismatic Classic Leather*, recibido el 4 de septiembre de 2026). 
+
+Como tu solicitud de devolución fue realizada fuera del plazo establecido de 10 días corridos desde la recepción, te informamos en su momento que no era posible proceder con la devolución automática. Sin embargo, se generó un ticket de soporte para evaluar tu caso de manera interna. 
+
+¿Te gustaría que escalemos esto nuevamente con nuestro equipo de supervisores o necesitas ayuda con alguna otra consulta?
