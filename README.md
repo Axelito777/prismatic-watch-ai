@@ -1,4 +1,4 @@
-# Prismatic Watch AI
+# Prismatic Watch AI.
 
 Agente de atención al cliente para Prismatic Watch, una tienda de relojes en línea. Consulta políticas con RAG, revisa pedidos, evalúa plazos, crea tickets de soporte y recuerda a cada cliente entre sesiones.
 
