@@ -1,2 +1,2 @@
 id,fecha,cliente,resumen,prioridad
-TCK-20261020165301,2026-10-20T16:53:01,Diego Pérez,Solicitud de devolución fuera de plazo para el pedido ORD-1002 (recibido el 2026-09-04). El sistema indicó que han pasado 46 días (plazo máximo de 10 días). Se requiere evaluación de soporte humano para excepción.,media
+TCK-20261020165936,2026-10-20T16:59:36,Diego Pérez,Solicitud de devolución para el pedido ORD-1002 fuera de plazo (recepción el 2026-09-04).,media

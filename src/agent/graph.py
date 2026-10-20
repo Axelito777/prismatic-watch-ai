@@ -10,6 +10,7 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
+import re
 
 from .memory import guardar_recuerdo, recortar_historial, recuperar_recuerdos
 from .prompts import MEMORY_PROMPT, PLANNER_PROMPT, SYSTEM_PROMPT
@@ -129,11 +130,18 @@ def build_agent():
             tc["name"] for m in turno if getattr(m, "tool_calls", None) for tc in m.tool_calls
         })
         if herramientas:
+            textos = " ".join(_texto(m) for m in turno if isinstance(m, ToolMessage))
+            tickets = re.findall(r"TCK-\d+", textos)
+            if "FUERA_DE_PLAZO" in textos:
+                plazo = "fuera de plazo"
+            elif "ELEGIBLE" in textos:
+                plazo = "dentro de plazo"
+            else:
+                plazo = "plazo no evaluado"
             guardar_recuerdo(
                 state["cliente_id"],
-                f"Consultó: {_texto(turno[0])[:150]}. "
-                f"Herramientas usadas: {', '.join(herramientas)}. "
-                f"Resultado: {_texto(turno[-1])[:200]}",
+                f"Consultó: {_texto(turno[0])[:150]}. Herramientas: {', '.join(herramientas)}. "
+                f"Resultado del plazo: {plazo}. Tickets creados: {', '.join(tickets) or 'ninguno'}.",
             )
         return {"alerta": ""}
 
