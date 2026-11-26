@@ -88,6 +88,8 @@ def evaluar_elegibilidad(
         compra = datetime.strptime(fecha_compra, "%Y-%m-%d").date()
     except ValueError:
         return "FECHA_INVALIDA: usa el formato YYYY-MM-DD"
+    if compra > hoy():
+        return "FECHA_INVALIDA: la fecha no puede ser futura"
     dias = (hoy() - compra).days
     plazo = PLAZOS_DIAS[tipo_caso]
     if dias <= plazo:
@@ -104,7 +106,8 @@ def crear_ticket(
     daño o cliente molesto, media si es duda de política, baja si es consulta."""
     TICKETS_PATH.parent.mkdir(parents=True, exist_ok=True)
     existe = TICKETS_PATH.exists()
-    ticket_id = f"TCK-{datetime.now():%Y%m%d%H%M%S}"
+    # Con microsegundos: dos tickets creados en el mismo segundo ya no comparten ID (solo dígitos: ver regex TCK-\d+).
+    ticket_id = f"TCK-{datetime.now():%Y%m%d%H%M%S%f}"
     with TICKETS_PATH.open("a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if not existe:
