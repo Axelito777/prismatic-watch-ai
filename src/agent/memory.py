@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -7,7 +8,9 @@ from langchain_core.messages import trim_messages
 from .tools import get_embeddings
 
 ROOT = Path(__file__).resolve().parents[2]
-MEMORY_PATH = str(ROOT / "memory_db")  # separada de chroma_db para que ingest.py no la borre
+# Separada de chroma_db para que ingest.py no la borre. MEMORY_DB_PATH permite aislarla
+# (las evaluaciones usan una carpeta temporal para no mezclar datos de prueba con clientes reales).
+MEMORY_PATH = os.getenv("MEMORY_DB_PATH", str(ROOT / "memory_db"))
 MAX_MENSAJES = 20
 
 
