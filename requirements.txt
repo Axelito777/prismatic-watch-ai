@@ -1,0 +1,19 @@
+# Dependencias del proyecto (Python 3.12). Para fijar las versiones exactas de tu entorno:
+#   pip freeze | grep -i -E "^(langchain|langgraph|chromadb|sentence-transformers|python-dotenv|streamlit|pandas|plotly|pytest)" > requirements.txt
+langchain
+langchain-core
+langchain-classic
+langchain-community
+langchain-text-splitters
+langchain-chroma
+langchain-google-genai
+langchain-huggingface
+langgraph
+chromadb
+sentence-transformers
+python-dotenv
+# EP3: dashboard y pruebas
+streamlit
+pandas
+plotly
+pytest

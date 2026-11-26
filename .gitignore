@@ -2,5 +2,7 @@ venv/
 .env
 __pycache__/
 *.pyc
+.pytest_cache/
 chroma_db/
-memory_db/memory_db/
+memory_db/
+logs/eval_tickets.csv
