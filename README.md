@@ -6,6 +6,7 @@ Proyecto de la asignatura ISY0101 - Ingeniería de Soluciones con IA.
 
 - **Evaluación Parcial N°1:** chatbot RAG (`src/chatbot.py`).
 - **Evaluación Parcial N°2:** agente funcional con herramientas, memoria y planificación (`src/agent/`, `src/main.py`).
+- **Evaluación Parcial N°3:** observabilidad (métricas, trazabilidad, dashboard) y uso responsable (`src/observability/`, `src/seguridad/`, `dashboard/`).
 
 ## Caso organizacional
 
@@ -66,6 +67,38 @@ El flujo está implementado como un grafo de estados con LangGraph (`src/agent/g
 | `PEDIDO_NO_ENCONTRADO` | Pide al cliente verificar el número de pedido. |
 | `FUERA_DE_PLAZO` | Explica el motivo y crea un ticket para revisión humana. |
 | `FECHA_INVALIDA` | Corrige el formato y reintenta. |
+
+## Observabilidad y uso responsable (EP3)
+
+Cada turno del agente queda trazado (latencia por nodo, llamadas al modelo, tokens, herramientas, errores) en
+`logs/traces.jsonl`, con los datos personales **enmascarados**. Sobre esos registros se calculan métricas de precisión,
+consistencia, frecuencia de errores, latencia y uso de recursos, y se visualizan en un dashboard.
+
+```mermaid
+flowchart LR
+    U([Cliente / caso de prueba]) --> G["guardrails<br/>valida · minimiza · bloquea"]
+    G --> A["agente LangGraph"]
+    A -. callbacks .-> C["TraceCollector"]
+    C --> T[("logs/traces.jsonl")]
+    R["tests/run_eval.py"] --> E[("logs/eval_results.jsonl")]
+    O["tests/eval_offline.py"] --> F[("logs/eval_offline.jsonl")]
+    T & E & F --> D["dashboard/app.py"]
+```
+
+```bash
+python tests/eval_offline.py                      # herramientas y búsqueda, sin usar el modelo
+python tests/run_eval.py --dry-run                # estima cuántas llamadas al modelo costará
+python tests/run_eval.py --nucleo --repeticiones 2 --lote eval1
+streamlit run dashboard/app.py                    # dashboard interactivo
+python -m pytest tests/unit -q                    # pruebas del código de observabilidad
+```
+
+- Métricas, esquema de los registros y límites: [`docs/observabilidad.md`](docs/observabilidad.md)
+- Seguridad, privacidad y normativa: [`docs/seguridad_privacidad.md`](docs/seguridad_privacidad.md)
+- Casos de evaluación (con variabilidad, borde, seguridad y datos personales): [`tests/eval_cases.json`](tests/eval_cases.json)
+
+> La cuota gratuita de Gemini (≈ 20 llamadas/día por modelo) limita las evaluaciones con el modelo. `run_eval.py` descuenta
+> lo ya usado hoy y es reanudable con `--lote`.
 
 ## Instalación
 
@@ -139,15 +172,23 @@ prismatic-watch-ai/
 │   │   ├── memory.py        # Memoria corta y larga
 │   │   ├── graph.py         # Grafo LangGraph, planificador y evaluador
 │   │   └── prompts.py       # Prompts del sistema y del planificador
-│   ├── main.py              # CLI del agente (EP2)
+│   ├── observability/       # EP3: trazas (callbacks), métricas y evaluación automática
+│   ├── seguridad/           # EP3: guardrails y enmascarado de datos personales
+│   ├── main.py              # CLI del agente (EP2, ahora con trazabilidad)
 │   ├── chatbot.py           # Chatbot RAG (EP1)
 │   ├── ingest.py            # Carga de documentos y creación de la base vectorial
 │   └── debug_retrieval.py   # Diagnóstico de recuperación
 ├── tests/
 │   ├── run_scenarios.py     # Ejecuta y registra los escenarios
 │   ├── calibrar_umbral.py   # Calibración del umbral de distancia
-│   └── logs/                # Evidencia de pruebas
-├── docs/                    # Diagramas y bocetos
+│   ├── eval_cases.json      # EP3: casos de evaluación
+│   ├── run_eval.py          # EP3: evaluación con el modelo (precisión y consistencia)
+│   ├── eval_offline.py      # EP3: evaluación de herramientas y búsqueda sin el modelo
+│   ├── unit/                # EP3: pruebas del código de observabilidad
+│   └── logs/                # Evidencia de pruebas (EP2)
+├── logs/                    # EP3: trazas y resultados de evaluación (JSONL, datos enmascarados)
+├── dashboard/app.py         # EP3: dashboard de observabilidad (Streamlit)
+├── docs/                    # Diagramas, observabilidad y seguridad/privacidad
 ├── requirements.txt
 ├── .env.example
 └── README.md

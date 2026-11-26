@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 from datetime import date, datetime
 from pathlib import Path
 from typing import Literal
@@ -11,7 +12,15 @@ from langchain_huggingface import HuggingFaceEmbeddings
 ROOT = Path(__file__).resolve().parents[2]
 CHROMA_PATH = str(ROOT / "chroma_db")
 ORDERS_PATH = ROOT / "data" / "orders.json"
-TICKETS_PATH = ROOT / "data" / "tickets.csv"
+# EP3: rutas y fecha configurables por variable de entorno para que las evaluaciones
+# sean reproducibles y no escriban en los datos reales (ver tests/run_eval.py).
+TICKETS_PATH = Path(os.getenv("TICKETS_PATH", ROOT / "data" / "tickets.csv"))
+
+
+def hoy() -> date:
+    """Fecha de referencia. FECHA_REFERENCIA=YYYY-MM-DD la fija (evaluaciones reproducibles)."""
+    ref = os.getenv("FECHA_REFERENCIA")
+    return date.fromisoformat(ref) if ref else date.today()
 
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
@@ -79,7 +88,9 @@ def evaluar_elegibilidad(
         compra = datetime.strptime(fecha_compra, "%Y-%m-%d").date()
     except ValueError:
         return "FECHA_INVALIDA: usa el formato YYYY-MM-DD"
-    dias = (date.today() - compra).days
+    if compra > hoy():
+        return "FECHA_INVALIDA: la fecha no puede ser futura"
+    dias = (hoy() - compra).days
     plazo = PLAZOS_DIAS[tipo_caso]
     if dias <= plazo:
         return f"ELEGIBLE: han pasado {dias} días y el plazo de {tipo_caso} es de {plazo} días."
@@ -95,7 +106,8 @@ def crear_ticket(
     daño o cliente molesto, media si es duda de política, baja si es consulta."""
     TICKETS_PATH.parent.mkdir(parents=True, exist_ok=True)
     existe = TICKETS_PATH.exists()
-    ticket_id = f"TCK-{datetime.now():%Y%m%d%H%M%S}"
+    # Con microsegundos: dos tickets creados en el mismo segundo ya no comparten ID (solo dígitos: ver regex TCK-\d+).
+    ticket_id = f"TCK-{datetime.now():%Y%m%d%H%M%S%f}"
     with TICKETS_PATH.open("a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         if not existe:
